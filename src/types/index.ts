@@ -20,4 +20,6 @@ export interface SettingsFormValues {
   demoTimeLimitMinutes: number
   /** Stop after this many full passes through the snippet (0 = no pass cap). */
   demoPassLimit: number
+  /** Request Screen Wake Lock so the display may stay on while this tab is open (browser-dependent). */
+  screenWakeLockEnabled: boolean
 }

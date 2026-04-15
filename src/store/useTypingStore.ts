@@ -29,6 +29,8 @@ export interface TypingState {
   demoCompletedPasses: number
   /** Wall-clock start of the current demo session */
   demoSessionStartedAt: number | null
+  /** Keep screen awake (Wake Lock API) while enabled and tab visible */
+  screenWakeLockEnabled: boolean
 
   setActiveSnippetIndex: (index: number) => void
   setMode: (mode: AppMode) => void
@@ -49,6 +51,7 @@ export interface TypingState {
   setDemoSessionStartedAt: (t: number | null) => void
   setDemoCompletedPasses: (n: number) => void
   incrementDemoCompletedPasses: () => void
+  setScreenWakeLockEnabled: (v: boolean) => void
 }
 
 function clampIndex(index: number, max: number): number {
@@ -79,6 +82,7 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   demoPassLimit: 0,
   demoCompletedPasses: 0,
   demoSessionStartedAt: null,
+  screenWakeLockEnabled: false,
   mode: 'demo',
   msPerChar: 42,
   displayName: 'Typist',
@@ -159,4 +163,6 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   setDemoCompletedPasses: (n: number) => set({ demoCompletedPasses: Math.max(0, n) }),
 
   incrementDemoCompletedPasses: () => set((s) => ({ demoCompletedPasses: s.demoCompletedPasses + 1 })),
+
+  setScreenWakeLockEnabled: (v: boolean) => set({ screenWakeLockEnabled: v }),
 }))

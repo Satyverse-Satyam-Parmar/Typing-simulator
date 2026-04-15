@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { AppLayout } from './components/AppLayout'
+import { ScreenWakeLockManager } from './components/ScreenWakeLockManager'
 import { appTheme } from './theme/theme'
 import { HomePage } from './pages/HomePage'
 import { SettingsPage } from './pages/SettingsPage'
@@ -21,6 +22,7 @@ export default function App(): ReactElement {
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
+      <ScreenWakeLockManager />
       <BrowserRouter basename={routerBasename()}>
         <Routes>
           <Route path="/" element={<AppLayout />}>

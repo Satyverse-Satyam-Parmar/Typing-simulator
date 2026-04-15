@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
+import { acquireScreenWakeLock, isScreenWakeLockSupported, releaseScreenWakeLock } from '../lib/screenWakeLock'
 import type { SettingsFormValues } from '../types'
 import { useTypingStore } from '../store/useTypingStore'
 
@@ -21,11 +22,13 @@ export function SettingsPage(): ReactElement {
   const demoRepeatEnabled = useTypingStore((s) => s.demoRepeatEnabled)
   const demoTimeLimitMinutes = useTypingStore((s) => s.demoTimeLimitMinutes)
   const demoPassLimit = useTypingStore((s) => s.demoPassLimit)
+  const screenWakeLockEnabled = useTypingStore((s) => s.screenWakeLockEnabled)
   const setDisplayName = useTypingStore((s) => s.setDisplayName)
   const setMsPerChar = useTypingStore((s) => s.setMsPerChar)
   const setDemoRepeatEnabled = useTypingStore((s) => s.setDemoRepeatEnabled)
   const setDemoTimeLimitMinutes = useTypingStore((s) => s.setDemoTimeLimitMinutes)
   const setDemoPassLimit = useTypingStore((s) => s.setDemoPassLimit)
+  const setScreenWakeLockEnabled = useTypingStore((s) => s.setScreenWakeLockEnabled)
 
   const {
     control,
@@ -41,6 +44,7 @@ export function SettingsPage(): ReactElement {
       demoRepeatEnabled,
       demoTimeLimitMinutes,
       demoPassLimit,
+      screenWakeLockEnabled,
     },
   })
 
@@ -53,10 +57,11 @@ export function SettingsPage(): ReactElement {
       demoRepeatEnabled,
       demoTimeLimitMinutes,
       demoPassLimit,
+      screenWakeLockEnabled,
     })
-  }, [displayName, msPerChar, demoRepeatEnabled, demoTimeLimitMinutes, demoPassLimit, reset])
+  }, [displayName, msPerChar, demoRepeatEnabled, demoTimeLimitMinutes, demoPassLimit, screenWakeLockEnabled, reset])
 
-  const onSubmit = (values: SettingsFormValues): void => {
+  const onSubmit = async (values: SettingsFormValues): Promise<void> => {
     if (values.demoRepeatEnabled && values.demoTimeLimitMinutes <= 0 && values.demoPassLimit <= 0) {
       setError('demoTimeLimitMinutes', {
         type: 'manual',
@@ -71,6 +76,13 @@ export function SettingsPage(): ReactElement {
     setDemoRepeatEnabled(values.demoRepeatEnabled)
     setDemoTimeLimitMinutes(values.demoTimeLimitMinutes)
     setDemoPassLimit(values.demoPassLimit)
+    setScreenWakeLockEnabled(values.screenWakeLockEnabled)
+
+    if (values.screenWakeLockEnabled) {
+      await acquireScreenWakeLock()
+    } else {
+      await releaseScreenWakeLock()
+    }
   }
 
   return (
@@ -114,6 +126,38 @@ export function SettingsPage(): ReactElement {
                 max={200}
                 step={1}
               />
+            </Box>
+          )}
+        />
+
+        <Typography variant="subtitle2" sx={{ pt: 1 }}>
+          Display (while this tab is open)
+        </Typography>
+
+        <Controller
+          name="screenWakeLockEnabled"
+          control={control}
+          render={({ field }) => (
+            <Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={field.value}
+                    onChange={(_e, v) => field.onChange(v)}
+                    slotProps={{ input: { 'aria-label': 'Keep screen on' } }}
+                  />
+                }
+                label="Keep screen on (Screen Wake Lock)"
+              />
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                Asks the browser to reduce screen dimming/timeout while this page stays open. Works best in Chrome or
+                Edge on Windows over HTTPS. It does not change Windows sleep settings; turn off when you are done.
+              </Typography>
+              {!isScreenWakeLockSupported() && (
+                <Alert severity="warning" variant="outlined" sx={{ mt: 1 }}>
+                  This browser does not support Screen Wake Lock. Try Chrome or Edge, and use HTTPS (e.g. GitHub Pages).
+                </Alert>
+              )}
             </Box>
           )}
         />
