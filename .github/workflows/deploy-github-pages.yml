@@ -28,7 +28,9 @@ jobs:
 
       - name: Install and build
         run: |
-          npm ci
+          # `npm install` (not `npm ci`) — lockfile optional deps (e.g. @emnapi/* under wasm bindings)
+          # must resolve cleanly on Linux CI; strict `npm ci` can fail with EUSAGE when lock was built on another OS.
+          npm install
           npm run build
 
       - name: SPA fallback (client routes on refresh)
