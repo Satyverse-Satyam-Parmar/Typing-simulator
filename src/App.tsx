@@ -5,17 +5,17 @@ import { ThemeProvider } from '@mui/material/styles'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { AppLayout } from './components/AppLayout'
+import { appTheme } from './theme/theme'
+import { HomePage } from './pages/HomePage'
+import { SettingsPage } from './pages/SettingsPage'
 
-/** Correct routes on GitHub Pages (`/Typing-simulator/`) and locally (`/`). */
+/** Routes work on GitHub Pages (`/Typing-simulator/`) and locally (`/`). */
 function routerBasename(): string | undefined {
   const base = import.meta.env.BASE_URL
   if (base === '/') return undefined
   const trimmed = base.replace(/\/$/, '')
   return trimmed === '' ? undefined : trimmed
 }
-import { appTheme } from './theme/theme'
-import { HomePage } from './pages/HomePage'
-import { SettingsPage } from './pages/SettingsPage'
 
 export default function App(): ReactElement {
   return (

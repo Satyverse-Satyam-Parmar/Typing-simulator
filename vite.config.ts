@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// GitHub Pages project site: https://<user>.github.io/Typing-simulator/
-const repoName = 'Typing-simulator'
+/** Must match the GitHub repo name (project Pages URL segment). */
+const GITHUB_PAGES_BASE = '/Typing-simulator/'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: process.env.GH_PAGES === 'true' ? `/${repoName}/` : '/',
-})
+  /** Production builds target GitHub Pages; dev server uses `/`. */
+  base: mode === 'production' ? GITHUB_PAGES_BASE : '/',
+}))

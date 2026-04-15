@@ -29,12 +29,11 @@ The site deploys automatically when you push to `main` (see `.github/workflows/d
 
 **https://satyverse-satyam-parmar.github.io/Typing-simulator/**
 
-To build the same output locally (with the `/Typing-simulator/` base path):
+Production builds (`npm run build`) use the `/Typing-simulator/` base path automatically. Preview the GitHub Pages bundle locally:
 
 ```bash
-# PowerShell
-$env:GH_PAGES='true'; npm run build; Remove-Item Env:GH_PAGES
-
-# bash
-GH_PAGES=true npm run build
+npm run build
+npm run preview
 ```
+
+Then open the URL Vite prints — use the path **`/Typing-simulator/`** (e.g. `http://localhost:4173/Typing-simulator/`).

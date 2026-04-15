@@ -27,8 +27,6 @@ jobs:
           cache: npm
 
       - name: Install and build
-        env:
-          GH_PAGES: 'true'
         run: |
           npm ci
           npm run build
